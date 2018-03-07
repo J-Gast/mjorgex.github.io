@@ -275,7 +275,7 @@
 					for(i=0; i < _listaarticulos.length; i++) {
 						document.getElementById("detalleVenta").innerHTML += '<tr> <td> '+ _listaarticulos[i].descripcion
 						+' </td> <td> Modelo 1 </td> <td>' + _listaarticulos[i].cantidad + ' </td> '
-						+'<td> 500 </td> <td> ' + _listaarticulos[i].cantidad * _listaarticulos[i].precio + '</td> '
+						+'<td> ' + _listaarticulos[i].precio + '</td> <td> ' + _listaarticulos[i].cantidad * _listaarticulos[i].precio + '</td> '
 						+'<td id=quitarProducto' + String(_listaarticulos[i].idArticulo)
 						+ ' > <button onclick="eliminarProducto(this)" type="button" class="botonAgregarEliminar" id=' + String(_listaarticulos[i].idArticulo)
 						+' > Eliminar </button> </td> '
