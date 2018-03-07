@@ -216,7 +216,7 @@
 							if (validaArticulo() == true) {
 								var existencia = document.getElementById('cantidad').value;
 								if(validaExistencia(existencia) == true) {
-									var _desc listaDeArticulos.find(i => i.id == parseInt(document.getElementById('articulo').value)).descripcion;
+									var _desc = listaDeArticulos.find(i => i.id == parseInt(document.getElementById('articulo').value)).descripcion;
 									var _precio = listaDeArticulos.find(i => i.id == parseInt(document.getElementById('articulo').value)).precio;
 									_precio = _precio * (1 + (listaDeConfiguraciones[0].tasaFinanciamiento * listaDeConfiguraciones[0].plazoMaximo)/100);
 									_precio = parseFloat(_precio).toFixed(2);
