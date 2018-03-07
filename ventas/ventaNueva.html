@@ -216,10 +216,11 @@
 							if (validaArticulo() == true) {
 								var existencia = document.getElementById('cantidad').value;
 								if(validaExistencia(existencia) == true) {
+									var _desc listaDeArticulos.find(i => i.id == parseInt(document.getElementById('articulo').value)).descripcion;
 									var _precio = listaDeArticulos.find(i => i.id == parseInt(document.getElementById('articulo').value)).precio;
 									_precio = _precio * (1 + (listaDeConfiguraciones[0].tasaFinanciamiento * listaDeConfiguraciones[0].plazoMaximo)/100);
 									_precio = parseFloat(_precio).toFixed(2);
-									_articulo = { idArticulo: document.getElementById('articulo').value,
+									_articulo = { idArticulo: document.getElementById('articulo').value, descripcion: _desc,
 																					cantidad: parseInt(document.getElementById('cantidad').value), precio:_precio  };
 									if(productoRepetido(_articulo) == false) {
 										_listaarticulos.push(_articulo)
@@ -272,7 +273,7 @@
 					+ '<th id="quitarProducto">Eliminar</th> </tr>';
 
 					for(i=0; i < _listaarticulos.length; i++) {
-						document.getElementById("detalleVenta").innerHTML += '<tr> <td> '+ _listaarticulos[i].idArticulo
+						document.getElementById("detalleVenta").innerHTML += '<tr> <td> '+ _listaarticulos[i].descripcion
 						+' </td> <td> Modelo 1 </td> <td>' + _listaarticulos[i].cantidad + ' </td> '
 						+'<td> 500 </td> <td> ' + _listaarticulos[i].cantidad * _listaarticulos[i].precio + '</td> '
 						+'<td id=quitarProducto' + String(_listaarticulos[i].idArticulo)
