@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>La Vendimia</title>
+    <link rel="stylesheet" type="text/css" href="../globalcss/horizontalMenu.css" />
+    <link rel="stylesheet" type="text/css" href="configuracion.css" />
+	</head>
+	<body>
+
+		<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+		<script>
+				// Initialize Firebase
+				var config = {
+						apiKey: "AIzaSyD80lE73my48MjoSe-OftEgHpob-Dk-i6I",
+						authDomain: "la-vendimia-682ba.firebaseapp.com",
+						databaseURL: "https://la-vendimia-682ba.firebaseio.com",
+						projectId: "la-vendimia-682ba",
+						storageBucket: "la-vendimia-682ba.appspot.com",
+						messagingSenderId: "733938493184"
+				};
+				firebase.initializeApp(config);
+
+				var dbRef = firebase.database().ref().child('Configuraciones');
+
+				dbRef.on('value', snap =>
+						some(snap.val())
+				);
+		</script>
+
+    <div>
+      <h1 class="h1HeaderVendimia" align="right"> La Vendimia <img class="imgHeaderVendimia" src="../assets/sale.png" alt="Ventas"> </h1>
+    </div>
+    <div id="header">
+      <ul class="nav">
+        <li><a href="">Inicio</a>
+          <ul>
+						<li><a href="../ventas/ventasPrincipal.html">Ventas</a></li>
+						<li><a href="../clientes/clientes.html">Clientes</a></li>
+						<li><a href="../articulos/articulos.html">Articulos</a></li>
+						<li><a href="../configuracion/configuracion.html">Configuración</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <h3 class="h3Header">Configuraciones</h3>
+    <table id="tableConfiguracion">
+      <tr>
+				<th> Plazo Máximo </th>
+				<th> Porciento Enganche </th>
+				<th> Tasa Financiamiento </th>
+      </tr>
+			<script>
+					function some(configuraciones){
+							 document.getElementById("tableConfiguracion").innerHTML = "";
+							 document.getElementById("tableConfiguracion").innerHTML =
+							 "<tr>" +
+							 		"<th> Plazo Máximo </th>" +
+									"<th> Porciento Enganche </th>" +
+									"<th> Tasa Financiamiento </th>" +
+							 "</tr>";
+							 for (var key in configuraciones) {
+									 document.getElementById("tableConfiguracion").innerHTML +=
+									 "<tr>"+
+									 		 "<td>"+configuraciones[key].plazoMaximo+"</td>" +
+											 "<td>"+configuraciones[key].porcientoEnganche+"</td>" +
+											 "<td>"+configuraciones[key].tasaFinanciamiento+"</td>" +
+									 "</tr>";
+							 }
+					}
+			</script>
+    </table>
+	</body>
+</html>

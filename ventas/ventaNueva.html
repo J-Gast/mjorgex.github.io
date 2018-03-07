@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>La Vendimia</title>
+    <link rel="stylesheet" type="text/css" href="../globalcss/horizontalMenu.css" />
+    <link rel="stylesheet" type="text/css" href="/ventas/ventasNueva.css" />
+    <link rel="stylesheet" type="text/css" href="https://www.prepbootstrap.com/Content/shieldui-lite/dist/css/light/all.min.css" />
+	</head>
+	<body>
+
+		<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+		<script>
+				// Initialize Firebase
+				var config = {
+						apiKey: "AIzaSyD80lE73my48MjoSe-OftEgHpob-Dk-i6I",
+						authDomain: "la-vendimia-682ba.firebaseapp.com",
+						databaseURL: "https://la-vendimia-682ba.firebaseio.com",
+						projectId: "la-vendimia-682ba",
+						storageBucket: "la-vendimia-682ba.appspot.com",
+						messagingSenderId: "733938493184"
+				};
+				firebase.initializeApp(config);
+
+				var dbRefClientes = firebase.database().ref().child('Clientes');
+				var dbRefArticulos = firebase.database().ref().child('Articulos');
+				var dbRefConfiguraciones = firebase.database().ref().child('Configuraciones');
+				var dbRefVentas = firebase.database().ref().child('Ventas');
+				var listaDeArticulos = [];
+				var listaDeClientes = [];
+				var listaDeVentas = [];
+				var listaDeConfiguraciones = [];
+
+				dbRefClientes.on('value', snap =>
+						someClientes(snap.val())
+				);
+
+				dbRefArticulos.on('value', snap =>
+						someArticulos(snap.val())
+				);
+
+				dbRefConfiguraciones.on('value', snap =>
+						someConfiguraciones(snap.val())
+				);
+
+				dbRefVentas.on('value', snap =>
+						someVentas(snap.val())
+				);
+
+		</script>
+
+    <div>
+      <h1 class="h1HeaderVendimia" align="right"> La Vendimia <img class="imgHeaderVendimia" src="../assets/sale.png" alt="Ventas"> </h1>
+    </div>
+    <div id="header">
+      <ul class="nav">
+        <li><a href="">Inicio</a>
+          <ul>
+						<li><a href="./ventas/ventasPrincipal.html">Ventas</a></li>
+						<li><a href="../clientes/clientes.html">Clientes</a></li>
+						<li><a href="../articulos/articulos.html">Articulos</a></li>
+						<li><a href="../configuracion/configuracion.html">Configuración</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+		<label class="labelFecha">
+			Fecha: <script> var f = new Date(); document.write(f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear()); </script>
+		</label>
+
+		<label class="labelFolio" id="labelFolioVenta">
+			Folio:
+		</label>
+
+  	<form>
+			<div class="divTextCliente">
+				Cliente
+
+	      <input list="listaclientes" id="cliente" onfocusout="validaCliente()">
+	      <datalist id="listaclientes">
+
+	      </datalist>
+
+				<label id="labelRFC">  </label>
+	    </div>
+
+	    <div class="divTextProducto">
+
+				Articulo
+	      <input list="listaarticulos" id="articulo">
+	      <datalist id="listaarticulos">
+
+	      </datalist>
+
+				Cantidad
+				<input type="text" id="cantidad">
+				<button type="button" class="botonAgregarEliminar" onclick="agregarProducto()" id="agregaProducto"> Agregar Producto </button>
+	    </div>
+
+			<br> <br>
+
+	    <table id="detalleVenta">
+	      <tr>
+	        <th>Descripcion Articulo</th>
+	        <th>Modelo</th>
+	        <th>Cantidad</th>
+	        <th>Precio</th>
+	        <th>Importe</th>
+					<th id="quitarProducto">Eliminar</th>
+	      </tr>
+	    </table>
+			<div class="labelResultados">
+				<label id="labelEnganche"> Enganche: </label> <br>
+				<label id="labelbonifEnganche"> Bonificación Enganche: </label><br>
+				<label id="labelTotal"> Total: </label>
+			</div>
+			<div class="divButton">
+				<button class="button" id="botonCancelar" onclick="cancelar()"> Cancelar </button>
+				<button class="button" type="button" onclick="next()" id="botonGuardar"> Siguiente </button>
+			</div>
+
+			<br> <br>
+
+			<table id="abonos" style="display:none;">
+				<h1 id="labelAbonos" style="display:none;"> Abonos Mensuales </h1>
+				<tr>
+					<td>3 ABONOS DE</td>
+					<td id="tresAbonosDe">$1125.33</td>
+					<td id="tresTotalPagar">TOTAL A PAGAR 3376.00</td>
+					<td id="tresAhorro">SE AHORRA 784.84</td>
+					<td><input id="tresRadio" type="radio" name="plazo"></td>
+				</tr>
+				<tr>
+					<td>6 ABONOS DE</td>
+					<td id="seisAbonosDe">$606.27</td>
+					<td id="seisTotalPagar">TOTAL A PAGAR 3637.00</td>
+					<td id="seisAhorro">SE AHORRA 523.24</td>
+					<td><input id="seisRadio" type="radio" name="plazo"></td>
+				</tr>
+				<tr>
+					<td>9 ABONOS DE</td>
+					<td id="nueveAbonosDe">$433.24</td>
+					<td id="nueveTotalPagar">TOTAL A PAGAR 3899.20</td>
+					<td id="nueveAhorro">SE AHORRA 261.64</td>
+					<td><input id="nueveRadio" type="radio" name="plazo"></td>
+				</tr>
+				<tr>
+					<td>12 ABONOS DE</td>
+					<td id="doceAbonosDe">$346.73</td>
+					<td id="doceTotalPagar">TOTAL A PAGAR 4160.84</td>
+					<td id="doceAhorro">SE AHORRA 0.00</td>
+					<td><input id="doceRadio" type="radio" name="plazo"></td>
+				</tr>
+			</table>
+
+			<div class="divButton" id="divGuardar" style="display:none;">
+				<button class="button"> Cancelar </button>
+				<button class="button" type="button" onclick="agregaVenta()"> Guardar </button>
+			</div>
+		</form>
+
+		<script>
+				var venta;
+				var listaDetalleVenta = [];
+				var _listaarticulos = []
+				var _idVenta;
+				var _articulo;
+				var _enganche = 0;
+				var _bonifEnganche = 0;
+				var _importe = 0;
+				var _totalAdeudo = 0;
+				var totalVenta = 0;
+				var _totalAPagar = [];
+				var _abonosDe = [];
+				var _ahorrosDe = [];
+
+				function someClientes(clientes){
+						 document.getElementById("listaclientes").innerHTML = "";
+						 listaDeClientes = []
+						 for (var key in clientes) {
+								 document.getElementById("listaclientes").innerHTML += "<option value="+clientes[key].id +">";
+								 listaDeClientes.push(clientes[key]);
+						 }
+				}
+
+				function someArticulos(articulos){
+						 document.getElementById("listaarticulos").innerHTML = "";
+						 listaDeArticulos = [];
+						 for (var key in articulos) {
+								 document.getElementById("listaarticulos").innerHTML += "<option value="+articulos[key].id +">";
+								 listaDeArticulos.push(articulos[key]);
+						 }
+				}
+
+				function someVentas(Ventas){
+						 listaDeVentas = [];
+						 for (var key in Ventas) {
+								 listaDeVentas.push(Ventas[key]);
+						 }
+						 document.getElementById("labelFolioVenta").innerHTML = "Folio: " + (parseInt(listaDeVentas.length) + 1);
+				}
+
+				function someConfiguraciones(configuraciones){
+						 listaDeConfiguraciones = [];
+						 for (var key in configuraciones) {
+								 listaDeConfiguraciones.push(configuraciones[key]);
+						 }
+				}
+
+				function agregarProducto() {
+			    if (parseInt(document.getElementById('cantidad').value) > 0 && document.getElementById('articulo').value != "") {
+							_idVenta = listaDeVentas.length + 1;
+
+							if (validaArticulo() == true) {
+								var existencia = document.getElementById('cantidad').value;
+								if(validaExistencia(existencia) == true) {
+									var _precio = listaDeArticulos.find(i => i.id == parseInt(document.getElementById('articulo').value)).precio;
+									_precio = _precio * (1 + (listaDeConfiguraciones[0].tasaFinanciamiento * listaDeConfiguraciones[0].plazoMaximo)/100);
+									_precio = parseFloat(_precio).toFixed(2);
+									_articulo = { idArticulo: document.getElementById('articulo').value,
+																					cantidad: parseInt(document.getElementById('cantidad').value), precio:_precio  };
+									if(productoRepetido(_articulo) == false) {
+										_listaarticulos.push(_articulo)
+										calcular();
+									}
+									else {
+										alert('El producto está repetido.');
+									}
+								}
+								else {
+									alert('La existencia es menor a la cantidad deseada.');
+								}
+						}
+			    }
+			    else {
+			        alert('Tiene que seleccionar un articulo y la cantidad tiene que ser mayor que 0');
+			    }
+				}
+
+				function eliminarProducto(comp) {
+					for(i=0; i < _listaarticulos.length; i++) {
+						if (_listaarticulos[i].idArticulo == comp.id) {
+							_listaarticulos.splice(i,1);
+							break;
+						}
+					}
+					calcular();
+				}
+
+				function productoRepetido(_articuloAInsertar) {
+					for(i=0; i < _listaarticulos.length; i++) {
+						if (_listaarticulos[i].idArticulo == _articuloAInsertar.idArticulo) {
+							return true;
+						}
+					}
+					return false;
+				}
+
+				function calcular () {
+					document.getElementById("detalleVenta").innerHTML = "";
+					document.getElementById('labelEnganche').innerHTML = 'Enganche: ';
+					document.getElementById('labelbonifEnganche').innerHTML = 'Bonificación Enganche: ';
+					document.getElementById('labelTotal').innerHTML = 'Total: ';
+					_importe = 0;
+					_enganche = 0;
+					_bonifEnganche = 0;
+					_totalAdeudo = 0;
+					document.getElementById("detalleVenta").innerHTML =
+					'<tr> <th>Descripcion Articulo</th> <th>Modelo</th> <th>Cantidad</th> <th>Precio</th> <th>Importe</th> '
+					+ '<th id="quitarProducto">Eliminar</th> </tr>';
+
+					for(i=0; i < _listaarticulos.length; i++) {
+						document.getElementById("detalleVenta").innerHTML += '<tr> <td> '+ _listaarticulos[i].idArticulo
+						+' </td> <td> Modelo 1 </td> <td>' + _listaarticulos[i].cantidad + ' </td> '
+						+'<td> 500 </td> <td> ' + _listaarticulos[i].cantidad * _listaarticulos[i].precio + '</td> '
+						+'<td id=quitarProducto' + String(_listaarticulos[i].idArticulo)
+						+ ' > <button onclick="eliminarProducto(this)" type="button" class="botonAgregarEliminar" id=' + String(_listaarticulos[i].idArticulo)
+						+' > Eliminar </button> </td> '
+						+' </tr>';
+
+
+						_importe += _listaarticulos[i].cantidad * _listaarticulos[i].precio;
+						_enganche = ((listaDeConfiguraciones[0].porcientoEnganche/100) * _importe);
+						_bonifEnganche = _enganche * ((listaDeConfiguraciones[0].tasaFinanciamiento * listaDeConfiguraciones[0].plazoMaximo) / 100);
+						_totalAdeudo = _importe - _enganche - _bonifEnganche;
+
+						document.getElementById('labelEnganche').innerHTML = 'Enganche: ' + parseFloat(_enganche).toFixed(2);
+						document.getElementById('labelbonifEnganche').innerHTML = 'Bonificación Enganche: ' + _bonifEnganche.toFixed(2);
+						document.getElementById('labelTotal').innerHTML = 'Total: ' + _totalAdeudo.toFixed(2);
+					}
+				}
+
+				function agregaVenta () {
+					var _cliente;
+
+					if (document.getElementById("tresRadio").checked == false && document.getElementById("seisRadio").checked == false &&
+							document.getElementById("nueveRadio").checked == false && document.getElementById("doceRadio").checked == false) {
+								alert('Seleccione un plazo');
+							}
+					else {
+						if (document.getElementById("tresRadio").checked == true) {
+							totalVenta = parseFloat(_totalAPagar[0]).toFixed(2);
+						}
+						else if (document.getElementById("seisRadio").checked == true) {
+							totalVenta = parseFloat(_totalAPagar[1]).toFixed(2);
+						}
+						if (document.getElementById("nueveRadio").checked == true) {
+							totalVenta = parseFloat(_totalAPagar[2]).toFixed(2);
+						}
+						if (document.getElementById("doceRadio").checked == true) {
+							totalVenta = parseFloat(_totalAPagar[3]).toFixed(2);
+						}
+
+						_cliente = listaDeClientes.find(i => i.id == parseInt(document.getElementById('cliente').value));
+
+						venta = { id:_idVenta, claveCliente: document.getElementById('cliente').value,
+											nombreCliente: _cliente.nombre + ' ' + _cliente.apellidoPaterno + ' ' + _cliente.apellidoMaterno,
+											total: totalVenta, fecha: f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear(),
+											estatus: 'A' }
+
+						writeSaleData(venta);
+						writeSaleDetailData(_listaarticulos);
+						writeProductData(function () {
+							alert('Venta realizada con exito.');
+							window.location='./ventasPrincipal.html';
+						});
+						document.getElementById("botonGuardar").style.display = 'none';
+						document.getElementById("botonCancelar").innerHTML = 'Regresar a Ventas';
+					}
+				}
+
+				function writeSaleData(_venta) {
+					var xidVenta = 'Venta' + String(_idVenta)
+					var _fecha = _venta.fecha
+	        firebase.database().ref('Ventas/' + xidVenta).set({
+	          id: _idVenta,
+	          claveCliente: _venta.claveCliente,
+	          nombreCliente : _venta.nombreCliente,
+						total : _venta.total,
+						fecha : _fecha,
+						estatus : 'A'
+	        });
+	      }
+
+				function writeSaleDetailData(xlistaArticulos) {
+					var xidVenta = 'Venta' + String(_idVenta)
+					firebase.database().ref('DetalleVentas/' + xidVenta).set({
+						idVenta: _idVenta,
+						articulos: xlistaArticulos
+					});
+				}
+
+				function writeProductData(callBack) {
+					for(i=0; i<_listaarticulos.length; i++) {
+						var _product = listaDeArticulos.find(x => x.id == _listaarticulos[i].idArticulo);
+						firebase.database().ref('Articulos/' + 'Articulo' + _product.id).set({
+							id: _product.id,
+							descripcion: _product.descripcion,
+							modelo : _product.modelo,
+							precio : _product.precio,
+							existencia : _product.existencia - _listaarticulos[i].cantidad
+						});
+					}
+					callBack();
+	      }
+
+				function validaArticulo() {
+					var articuloEncontrado = listaDeArticulos.find(i => i.id == parseInt(document.getElementById('articulo').value));
+					if (typeof articuloEncontrado !== 'undefined') {
+						return true;
+					}
+					else {
+						alert('Seleccione un articulo valido');
+						return false;
+					}
+				}
+
+				function validaCliente() {
+					var clienteEncontrado = listaDeClientes.find(i => i.id == parseInt(document.getElementById('cliente').value));
+					if (typeof clienteEncontrado !== 'undefined') {
+						document.getElementById('labelRFC').innerHTML = 'RFC: ' + clienteEncontrado.RFC;
+						return true;
+					}
+					else {
+						alert('Seleccione un cliente valido');
+						return false;
+					}
+				}
+
+				function validaExistencia(_existencia) {
+					var articuloEncontrado = listaDeArticulos.find(i => i.id == parseInt(document.getElementById('articulo').value));
+					if ((articuloEncontrado.existencia - _existencia) > - 1) {
+						return true;
+					}
+					else {
+						return false;
+					}
+				}
+				function next() {
+					if (_listaarticulos.length > 0) {
+						if (validaCliente() == true && (validaArticulo() && parseInt(document.getElementById('cantidad').value) > 0)) {
+					    document.getElementById('abonos').style.display = 'block';
+					    document.getElementById('abonos').style.marginLeft = '30%';
+							document.getElementById('labelAbonos').style.display = 'block';
+							document.getElementById('labelAbonos').style.marginLeft = '43%';
+							document.getElementById('divGuardar').style.display = 'block';
+							document.getElementById('divGuardar').style.marginLeft = '70%';
+							document.getElementById('agregaProducto').style.display = 'none';
+							document.getElementById('botonCancelar').style.display = 'none';
+							document.getElementById('botonGuardar').style.display = 'none'
+							document.getElementById('quitarProducto').style.display = 'none'
+
+							for(i=0; i < _listaarticulos.length; i++) {
+								document.getElementById('quitarProducto' + String(_listaarticulos[i].idArticulo)).style.display = 'none'
+							}
+
+							var _precioContado = _totalAdeudo / (1 + ((listaDeConfiguraciones[0].tasaFinanciamiento * listaDeConfiguraciones[0].plazoMaximo) / 100));
+
+							for(i=1; i<=4; i++ ) {
+								_totalAPagar[i-1] = _precioContado * (1 + (listaDeConfiguraciones[0].tasaFinanciamiento * i*3) / 100);
+								_abonosDe[i-1] = _totalAPagar[i-1] / (i*3);
+								_ahorrosDe[i-1] = _totalAdeudo - _totalAPagar[i-1];
+							}
+
+
+
+
+							document.getElementById('tresAbonosDe').innerHTML = '$' + parseFloat(_abonosDe[0]).toFixed(2);
+							document.getElementById('seisAbonosDe').innerHTML = '$' + parseFloat(_abonosDe[1]).toFixed(2);
+							document.getElementById('nueveAbonosDe').innerHTML = '$' + parseFloat(_abonosDe[2]).toFixed(2);
+							document.getElementById('doceAbonosDe').innerHTML = '$' + parseFloat(_abonosDe[3]).toFixed(2);
+
+							document.getElementById('tresTotalPagar').innerHTML = 'TOTAL A PAGAR: $' + parseFloat(_totalAPagar[0]).toFixed(2);
+							document.getElementById('seisTotalPagar').innerHTML = 'TOTAL A PAGAR: $' + parseFloat(_totalAPagar[1]).toFixed(2);
+							document.getElementById('nueveTotalPagar').innerHTML = 'TOTAL A PAGAR: $' + parseFloat(_totalAPagar[2]).toFixed(2);
+							document.getElementById('doceTotalPagar').innerHTML = 'TOTAL A PAGAR: $' + parseFloat(_totalAPagar[3]).toFixed(2);
+
+							document.getElementById('tresAhorro').innerHTML = 'SE AHORRA: $' + parseFloat(_ahorrosDe[0]).toFixed(2);
+							document.getElementById('seisAhorro').innerHTML = 'SE AHORRA: $' + parseFloat(_ahorrosDe[1]).toFixed(2)
+							document.getElementById('nueveAhorro').innerHTML = 'SE AHORRA: $' + parseFloat(_ahorrosDe[2]).toFixed(2)
+							document.getElementById('doceAhorro').innerHTML = 'SE AHORRA: $' + parseFloat(_ahorrosDe[3]).toFixed(2)
+						}
+					}
+					else {
+						alert('No ha insertado ningun producto');
+					}
+				}
+
+				function cancelar() {
+					window.location='./ventasPrincipal.html';
+				}
+		</script>
+
+	</body>
+</html>

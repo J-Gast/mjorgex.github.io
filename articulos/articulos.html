@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>La Vendimia</title>
+    <link rel="stylesheet" type="text/css" href="../globalcss/horizontalMenu.css" />
+    <link rel="stylesheet" type="text/css" href="articulos.css" />
+	</head>
+	<body>
+
+		<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+		<script>
+				// Initialize Firebase
+				var config = {
+						apiKey: "AIzaSyD80lE73my48MjoSe-OftEgHpob-Dk-i6I",
+						authDomain: "la-vendimia-682ba.firebaseapp.com",
+						databaseURL: "https://la-vendimia-682ba.firebaseio.com",
+						projectId: "la-vendimia-682ba",
+						storageBucket: "la-vendimia-682ba.appspot.com",
+						messagingSenderId: "733938493184"
+				};
+				firebase.initializeApp(config);
+
+				var dbRef = firebase.database().ref().child('Articulos');
+
+				dbRef.on('value', snap =>
+						some(snap.val())
+				);
+		</script>
+
+    <div>
+      <h1 class="h1HeaderVendimia" align="right"> La Vendimia <img class="imgHeaderVendimia" src="../assets/sale.png" alt="Ventas"> </h1>
+    </div>
+    <div id="header">
+      <ul class="nav">
+        <li><a href="">Inicio</a>
+          <ul>
+						<li><a href="../ventas/ventasPrincipal.html">Ventas</a></li>
+						<li><a href="../clientes/clientes.html">Clientes</a></li>
+						<li><a href="../articulos/articulos.html">Articulos</a></li>
+						<li><a href="../configuracion/configuracion.html">Configuración</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <h3 class="h3Header">Articulos</h3>
+    <table id="tableArticulos">
+      <tr>
+				<th>Clave Articulo</th>
+        <th>Descripción</th>
+        <th>Precio</th>
+        <th>Existencia</th>
+        <th>Modelo</th>
+      </tr>
+			<script>
+					function some(articulos){
+							 document.getElementById("tableArticulos").innerHTML = "";
+							 document.getElementById("tableArticulos").innerHTML =
+							 "<tr>" +
+							 		"<th> Clave Articulos </th>" +
+									"<th> Descripción </th>" +
+									"<th> Precio </th>" +
+									"<th> Existencia </th>" +
+									"<th> Modelo </th>"
+							 "</tr>";
+							 for (var key in articulos) {
+									 document.getElementById("tableArticulos").innerHTML +=
+									 "<tr>"+
+									 		 "<td>"+articulos[key].id+"</td>" +
+											 "<td>"+articulos[key].descripcion+"</td>" +
+											 "<td>"+articulos[key].precio+"</td>" +
+											 "<td>"+articulos[key].existencia+"</td>" +
+											 "<td>"+articulos[key].modelo+"</td>"
+									 "</tr>";
+							 }
+					}
+			</script>
+    </table>
+	</body>
+</html>

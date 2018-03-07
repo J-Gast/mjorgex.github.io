@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>La Vendimia</title>
+    <link rel="stylesheet" type="text/css" href="../globalcss/horizontalMenu.css" />
+    <link rel="stylesheet" type="text/css" href="ventasPrincipal.css" />
+	</head>
+	<body>
+
+		<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+		<script>
+				// Initialize Firebase
+				var config = {
+						apiKey: "AIzaSyD80lE73my48MjoSe-OftEgHpob-Dk-i6I",
+						authDomain: "la-vendimia-682ba.firebaseapp.com",
+						databaseURL: "https://la-vendimia-682ba.firebaseio.com",
+						projectId: "la-vendimia-682ba",
+						storageBucket: "la-vendimia-682ba.appspot.com",
+						messagingSenderId: "733938493184"
+				};
+				firebase.initializeApp(config);
+
+				var dbRef = firebase.database().ref().child('Ventas');
+
+				dbRef.on('value', snap =>
+						some(snap.val())
+				);
+		</script>
+
+    <div>
+      <h1 class="h1HeaderVendimia" align="right"> La Vendimia <img class="imgHeaderVendimia" src="../assets/sale.png" alt="Ventas"> </h1>
+    </div>
+    <div id="header">
+      <ul class="nav">
+        <li><a href="">Inicio</a>
+          <ul>
+						<li><a href="../ventas/ventasPrincipal.html">Ventas</a></li>
+						<li><a href="../clientes/clientes.html">Clientes</a></li>
+						<li><a href="../articulos/articulos.html">Articulos</a></li>
+						<li><a href="../configuracion/configuracion.html">Configuración</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="divButton" align="right">
+      <button class="button" onclick="window.location='./ventaNueva.html';">  <img src="../assets/add.png"> <br> Nueva Venta </button>
+    </div>
+    <h3 class="h3Header">Ventas Activas</h3>
+
+    <table id="tableVentas">
+      <tr>
+        <th>Folio Venta</th>
+        <th>Clave Cliente</th>
+        <th>Nombre</th>
+        <th>Total</th>
+        <th>Fecha</th>
+        <th>Estatus</th>
+      </tr>
+			<script>
+					function some(ventas){
+							 document.getElementById("tableVentas").innerHTML = "";
+							 document.getElementById("tableVentas").innerHTML =
+							 "<tr>" +
+									"<th> Folio Venta </th>" +
+									"<th> Clave Cliente </th>" +
+									"<th> Nombre </th>" +
+									"<th> Total </th>" +
+									"<th> Fecha </th>" +
+									"<th> Estatus </th>" +
+							 "</tr>";
+							 for (var key in ventas) {
+									 document.getElementById("tableVentas").innerHTML +=
+									 "<tr>"+
+											 "<td>"+ventas[key].id+"</td>" +
+											 "<td>"+ventas[key].claveCliente+"</td>" +
+											 "<td>"+ventas[key].nombreCliente+"</td>" +
+											 "<td>"+ventas[key].total+"</td>" +
+											 "<td>"+ventas[key].fecha+"</td>" +
+											 "<td>"+ventas[key].estatus+"</td>" +
+									 "</tr>";
+							 }
+					}
+			</script>
+    </table>
+	</body>
+</html>
